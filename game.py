@@ -39,15 +39,40 @@ class TicTacToe:
         # Return +1 if X has won, -1 if O has won,
         # or 0 for a draw. Only valid when
         # is_terminal() returns True.
-        pass
+        winner = self.check_winner()
+        if winner == 1:
+            return 1
+        elif winner == -1:
+            return -1
+        else:
+            return 0
+        
 
     def check_winner(self):
         # Return 1 if X has three in a row, -1 if
         # O has three in a row, or 0 otherwise.
-        pass
+        # Check rows
+        for i in range(3):
+            if self.board[i][0] == self.board[i][1] == self.board[i][2] != 0:
+                return self.board[i][0]
+        # Check columns
+        for j in range(3):
+            if self.board[0][j] == self.board[1][j] == self.board[2][j] != 0:
+                return self.board[0][j]
+        # Check diagonals
+        if self.board[0][0] == self.board[1][1] == self.board[2][2] != 0:
+            return self.board[0][0]
+        if self.board[0][2] == self.board[1][1] == self.board[2][0] != 0:
+            return self.board[0][2]
+        return 0
+    
+
 
     def display(self):
         # Print the board in a readable 3x3 format.
         # Use 'X' for 1, 'O' for -1, '.' for 0.
-        pass
+        symbols = {1: 'X', -1: 'O', 0: '.'}
+        for row in self.board:
+            print(' '.join(symbols[cell] for cell in row))
+        
     
