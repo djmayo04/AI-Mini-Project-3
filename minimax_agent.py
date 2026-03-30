@@ -5,59 +5,44 @@ def minimax(state):
     if state.current_player == 1:
         best_value = float('-inf')
         best_move = None
-        alpha = float('-inf')
-        beta = float('inf')
-
         for move in state.get_legal_moves():
             child = state.make_move(move)
-            value = min_value_ab(child, alpha, beta)
+            value = min_value(child)
             if value > best_value:
                 best_value = value
                 best_move = move
-            alpha = max(alpha, best_value)
         return best_move
-    
     else:
+        # TODO: implement the symmetric case
+        # for MIN.
         worst_value = float('inf')
         worst_move = None
-        alpha = float('-inf')
-        beta = float('inf')
-
         for move in state.get_legal_moves():
             child = state.make_move(move)
-            value = max_value_ab(child, alpha, beta)
+            value = max_value(child)
             if value < worst_value:
                 worst_value = value
                 worst_move = move
-            beta = min(beta, worst_value)
         return worst_move
 
-def max_value_ab(state, alpha, beta):
+def max_value(state):
     if state.is_terminal():
         return state.utility()
-    
     v = float('-inf')
     for move in state.get_legal_moves():
         child = state.make_move(move)
-        v = max(v, min_value_ab(child, alpha, beta))
-        if v >= beta:
-            return v
-        alpha = max(alpha, v)
+        v = max(v, min_value(child))
     return v
     
-def min_value_ab(state, alpha, beta):
+def min_value(state):
     # TODO: implement. This is symmetric to
     # max_value, but minimizes instead.
     if state.is_terminal():
         return state.utility()
-    
     v = float('inf')
     for move in state.get_legal_moves():
         child = state.make_move(move)
-        v = min(v, max_value_ab(child, alpha, beta))
-        if v <= alpha:
-            return v
-        beta = min(beta, v)
+        v = min(v, max_value(child))
     return v
 
 
@@ -84,37 +69,11 @@ def main():
 
     state = state.make_move(4)
     state = state.make_move(2)
-    state.display()
     best = minimax(state)
     print(best)
     state = state.make_move(best)
     state.display()
     best = minimax(state)
-    print(best)
-    state = state.make_move(best)
-    state.display()
-    best = minimax(state)
-    print(best)
-    state = state.make_move(best)
-    state.display()
-    best = minimax(state)
-    print(best)
-    state = state.make_move(best)
-    state.display()
-    best = minimax(state)
-    print(best)
-    state = state.make_move(best)
-    state.display()
-    best = minimax(state)
-    print(best)
-    state = state.make_move(best)
-    state.display()
-    best = minimax(state)
-    print(best)
-    state = state.make_move(best)
-    state.display()
-    best = minimax(state)
-    print(best)
     state = state.make_move(best)
     state.display()
     
