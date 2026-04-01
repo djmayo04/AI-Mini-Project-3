@@ -19,7 +19,7 @@ class MCTSNode:
         for move in self.untried_moves:
             corresponding = 0
             for child in self.children:
-                if move in child.untried_moves:
+                if move == child.move:
                     corresponding += 1
             
             if corresponding == 0:
@@ -54,7 +54,7 @@ class MCTSNode:
             if child.visits > most_visits.visits:
                 most_visits = child
         
-        return most_visits
+        return most_visits.move
 
 
 # -----four steps
