@@ -1,5 +1,6 @@
 import math
 import random
+import game
 
 class MCTSNode:
     def __init__(self, state, parent=None, move=None):
@@ -11,21 +12,49 @@ class MCTSNode:
         self.visits = 0
         self.untried_moves = state.get_legal_moves()
         
+
     def is_fully_expanded(self):
         # Return True if every legal move from
         # this state has a corresponding child.
-        pass
+        for move in self.untried_moves:
+            corresponding = 0
+            for child in self.children:
+                if move in child.untried_moves:
+                    corresponding += 1
+            
+            if corresponding == 0:
+                return False
+
+        return True
+            
 
     def best_child(self, c=1.41):
         # Return the child with the highest UCB1
         # score. Use the formula from Section 5.4.
-        pass
+        best = self.children[0]
+        best_utility = best.utility / best.visits
+        best_ucb1 = best_utility + c * math.sqrt((math.log(best.parent.visits)) / best.visits)
+
+        for child in self.children:
+            avg_utility = child.utility / child.visits
+            ucb1 = avg_utility + c * math.sqrt((math.log(child.parent.visits)) / child.visits)
+            if ucb1 > best_ucb1:
+                best = child
+                best_ucb1 = ucb1
+
+        return best
+    
 
     def best_move(self):
         # Return the move leading to the child
         # with the most visits (not the highest
         # win rate).
-        pass
+        most_visits = self.children[0]
+        for child in self.children:
+            if child.visits > most_visits.visits:
+                most_visits = child
+        
+        return most_visits
 
 
 # -----four steps
@@ -69,3 +98,18 @@ def mcts(state, iterations=1000):
         # 4. Back-propagate
         backpropagate(leaf, result)
     return root.best_move()
+
+
+
+def main():
+    game_ = game.TicTacToe()
+    node1 = MCTSNode(game_)
+    node2 = MCTSNode(game_, node1)
+    if node2.parent is not None:
+        print("yeah")
+    else:
+        print("Nah")
+
+if __name__ == "__main__":
+    main()
+    
