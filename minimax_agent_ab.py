@@ -1,5 +1,8 @@
 import game
 
+node_count = 0  # counts nodes evaluated by Minimax / Alpha-Beta
+pruned_count = 0  # counts nodes skipped due to alpha-beta pruned
+
 def minimax(state):
     # Return the best move for the current player.
     if state.current_player == 1:
@@ -33,6 +36,11 @@ def minimax(state):
         return worst_move
 
 def max_value_ab(state, alpha, beta):
+    # TODO: add pruned_count functionality 
+    # possible moves that are cut off when v>=beta
+    global node_count, pruned_count
+    node_count+=1 # update node counter everytime
+
     if state.is_terminal():
         return state.utility()
     
@@ -41,13 +49,17 @@ def max_value_ab(state, alpha, beta):
         child = state.make_move(move)
         v = max(v, min_value_ab(child, alpha, beta))
         if v >= beta:
+            pruned_count = 0
             return v
         alpha = max(alpha, v)
     return v
     
 def min_value_ab(state, alpha, beta):
-    # TODO: implement. This is symmetric to
-    # max_value, but minimizes instead.
+    # TODO: add pruned_count functionality 
+    # possible moves that are cut off when v<=alpha
+    global node_count, pruned_count
+    node_count+=1 # update node counter everytime
+
     if state.is_terminal():
         return state.utility()
     
@@ -56,6 +68,7 @@ def min_value_ab(state, alpha, beta):
         child = state.make_move(move)
         v = min(v, max_value_ab(child, alpha, beta))
         if v <= alpha:
+            pruned_count = 0 # pruned_pct = (prune_count / prune_count + node_count) * 100
             return v
         beta = min(beta, v)
     return v
