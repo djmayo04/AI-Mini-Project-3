@@ -8,7 +8,7 @@ class MCTSNode:
         self.parent = parent
         self.move = move
         self.children = []
-        self.wins = 0
+        self.utility = 0
         self.visits = 0
         self.untried_moves = state.get_legal_moves()
         
@@ -63,18 +63,32 @@ def select(node):
     # choose the best child (by UCB1) until you
     # reach a node that is not fully expanded
     # or that represents a terminal state.
-    pass
+    while not node.state.is_terminal() and node.is_fully_expanded():
+        node = node.best_child()
+    return node
 
 def expand(node):
     # Choose one of the untried moves, create a
     # new child node for it, and return the child.
-    pass
+    move = random.choice(node.untried_moves)
+    node.untried_moves.remove(move)
+    # new node
+    new_state = node.state.make_move(move)
+    child = MCTSNode(new_state, parent=node, move=move)
+    node.children.append(child)
+    return child
 
 def simulate(state):
     # From the given state, play a random game to
     # completion. At each step, choose a uniformly
     # random legal move. Return the utility.
-    pass
+    current_state = state
+    while not current_state.is_terminal():
+        legal_moves = current_state.get_legal_moves()
+        move = random.choice(legal_moves)
+        current_state = current_state.make_move(move)
+    return current_state.utility()
+    
 
 def backpropagate(node, result):
     # Walk from the given node up to the root.
@@ -82,7 +96,10 @@ def backpropagate(node, result):
     # Increment the win count only for nodes
     # where the result was favorable for the
     # player who made the move.
-    pass
+    while node is not None:
+        node.visits += 1
+        node.utility += result * node.state.current_player
+        node = node.parent
 
 # -----main
 def mcts(state, iterations=1000):
@@ -103,12 +120,10 @@ def mcts(state, iterations=1000):
 
 def main():
     game_ = game.TicTacToe()
-    node1 = MCTSNode(game_)
-    node2 = MCTSNode(game_, node1)
-    if node2.parent is not None:
-        print("yeah")
-    else:
-        print("Nah")
+    move = mcts(game_, iterations=1000)
+    print(f"MCTS recommends move: {move}")
+    new_state = game_.make_move(move)
+    new_state.display()
 
 if __name__ == "__main__":
     main()
