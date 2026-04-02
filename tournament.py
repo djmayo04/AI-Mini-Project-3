@@ -1,22 +1,17 @@
-'''
-    *****HEAD TO HEAD COMPARISON*****
-    - plays multiple games between different agent combinations
-    - four matchups, with at least 100 games per matchup
-        23. Minimax (X) versus Random (O).
-        24. MCTS with 1,000 iterations (X) versus Random (O).
-        25. Minimax (X) versus MCTS with 1,000 iterations (O).
-        26. MCTS with 1,000 iterations (X) versus Minimax (O). 
-'''
 #Minimax vs Random, record numbers of wins for X(minimax) and O(random), and number of draws and put it on a table
 from game import TicTacToe
+from minimax_agent_ab import minimax
+import random
+import mcts_agent
 
-from minimax_agent import minimax
 
 def play_game(agent_x, agent_o):
     games = TicTacToe()
+    # print("beegin")
     while not games.is_terminal():
         if games.current_player == 1:
             move = agent_x(games)
+            games = games.make_move(move)
         else:
             move = agent_o(games)
             games = games.make_move(move)
@@ -26,12 +21,11 @@ def play_game(agent_x, agent_o):
 
 #MTCs with 1000 iterations vs Random, record numbers of wins for X(MCTS) and O(random), and number of draws and put it on a table
 def random_agent(state):
-    import random
     legal_moves = state.get_legal_moves()
     return random.choice(legal_moves)
 
+
 def main():
-    import mcts_agent as mcts
     num_games = 100
     results = {'Minimax vs Random': {'X wins': 0, 'O wins': 0, 'Draws': 0},
                'MCTS vs Random': {'X wins': 0, 'O wins': 0, 'Draws': 0},
@@ -46,24 +40,27 @@ def main():
             results['Minimax vs Random']['O wins'] += 1
         else:
             results['Minimax vs Random']['Draws'] += 1
+
     for _ in range(num_games):
-        result = play_game(lambda state: mcts(state, iterations=1000), random_agent)
+        result = play_game(mcts_agent.mcts, random_agent)
         if result == 1:
             results['MCTS vs Random']['X wins'] += 1
         elif result == -1:
             results['MCTS vs Random']['O wins'] += 1
         else:
             results['MCTS vs Random']['Draws'] += 1
+
     for _ in range(num_games):
-        result = play_game(minimax, lambda state:mcts(state,iterations =1000))
+        result = play_game(minimax, mcts_agent.mcts)
         if result == 1:
             results['Minimax vs MCTS']['X wins'] +=1
         elif result == -1:
             results['Minimax vs MCTS']['O wins'] += 1
         else:
             results['Minimax vs MCTS']['Draws'] += 1
+
     for _ in range(num_games):
-        result = play_game(lambda state: mcts(state, iterations=1000), minimax)
+        result = play_game(mcts_agent.mcts, minimax)
         if result == 1:
             results['MCTS vs Minimax']['X wins'] += 1
         elif result == -1:
@@ -75,6 +72,17 @@ def main():
     print(f"{'Matchup':20} {'X wins':10} {'O wins':10} {'Draws':10}")
     for matchup, stats in results.items():
         print(f"{matchup:20} {stats['X wins']:10} {stats['O wins']:10} {stats['Draws']:10}")
+
+
 if __name__ == "__main__":    main()
 
 
+'''
+    *****HEAD TO HEAD COMPARISON*****
+    - plays multiple games between different agent combinations
+    - four matchups, with at least 100 games per matchup
+        23. Minimax (X) versus Random (O).
+        24. MCTS with 1,000 iterations (X) versus Random (O).
+        25. Minimax (X) versus MCTS with 1,000 iterations (O).
+        26. MCTS with 1,000 iterations (X) versus Minimax (O). 
+'''
