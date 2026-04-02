@@ -74,24 +74,6 @@ def min_value_ab(state, alpha, beta):
     return v
 
 
-# # ADDED ALPHA-BETA PRUNING
-# def max_value_ab(state, alpha, beta):
-#     if state.is_terminal():
-#         return state.utility()
-#     v = float('-inf')
-#     for move in state.get_legal_moves():
-#         child = state.make_move(move)
-#         v = max(v, min_value_ab(child, alpha, beta))
-#         if v >= beta:
-#             return v # Beta cutoff
-#         alpha = max(alpha, v)
-#     return v
-
-# def min_value_ab(state, alpha, beta):
-#     # TODO: implement with alpha cutoff.
-#     pass
-
-
 def main():
     state = game.TicTacToe()
 
@@ -134,6 +116,8 @@ def main():
     print(pruned_count)
     percent_pruned = (pruned_count / (node_count + pruned_count)) * 100
     print(f"{percent_pruned:.2f}%")
+
+
 
 if __name__ == "__main__":
     main()
