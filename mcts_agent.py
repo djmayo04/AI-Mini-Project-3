@@ -145,6 +145,9 @@ def test_winning_move():
 
     move = mcts(game_, iterations=100)
     print(f"MCTS move: {move}")
+    
+    game_ = game_.make_move(move)
+    game_.display()
 
 def test_blocking_move():
     print("\n---- Blocking Move ----")
@@ -160,6 +163,9 @@ def test_blocking_move():
 
     move = mcts(game_, iterations=500)
     print(f"MCTS move: {move}")
+
+    game_ = game_.make_move(move)
+    game_.display()
 
 
 def play_game_mini(agent_x):
@@ -196,6 +202,7 @@ def main():
     print("---- Empty Board ----")
     new_state.display()
     print(f"MCTS move: {move}")
+
     test_winning_move()
     test_blocking_move()
     

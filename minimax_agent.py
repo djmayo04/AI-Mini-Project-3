@@ -77,14 +77,53 @@ def play_game_mini(agent_x):
 
     return games.utility()
 
+def mini_v_mini(agent_x, agent_o):
+    games = game.TicTacToe()
+    while not games.is_terminal():
+        if games.current_player == 1:
+            move = agent_x(games)
+            games = games.make_move(move)
+        else:
+            move = agent_o(games)
+            games = games.make_move(move)
+            
+    games.display()
+
+    return games.utility()
+
 
 def main():
     state = game.TicTacToe()
 
-    result = play_game_mini(minimax)
+    # ----- TESTING -----
+    print("\nFrom empty board:")
+    move = minimax(state)
+    new_state = state.make_move(move)
+    new_state.display()
+    print(f"Mini-max chosen move: {move}")
+    
+    print("\nSecond Condition:")
+    state = state.make_move(4)
+    state = state.make_move(2)
+    best = minimax(state)
+    print(f"Mini-max chosen move: {move}")
+    state = state.make_move(best)
+    state.display()
+    print(f"Count results: {counter}")
+
+    result = mini_v_mini(minimax, minimax)
+    print("Results from Mini vs. Mini:")
     if result == 1:
         print("Minimax won.")
     elif result == -1:
+        print("Congratulations! You won.")
+    else:
+        print("Draw.")
+
+    result1 = play_game_mini(minimax)
+    if result1 == 1:
+        print("Minimax won.")
+    elif result1 == -1:
         print("Congratulations! You won.")
     else:
         print("Draw.")
