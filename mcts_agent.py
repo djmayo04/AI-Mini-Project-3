@@ -11,6 +11,7 @@ class MCTSNode:
         self.utility = 0
         self.visits = 0
         self.untried_moves = state.get_legal_moves()
+        self.player = parent.state.current_player if parent else None
         
 
     def is_fully_expanded(self):
@@ -98,7 +99,14 @@ def backpropagate(node, result):
     # player who made the move.
     while node is not None:
         node.visits += 1
-        node.utility += result * node.state.current_player
+
+        if node.player is not None:
+            # increment utility for correct player (+ for X and - for O)
+            if node.player == 1:
+                node.utility += result
+            else:
+                node.utility -= result        
+        
         node = node.parent
 
 # -----main
@@ -116,16 +124,54 @@ def mcts(state, iterations=1000):
         backpropagate(leaf, result)
     return root.best_move()
 
+def test_empty_board():
+    # Test MCTS on empty board, should choose center or corner
+    print("=== Test: Empty Board ===")
+    game_ = game.TicTacToe()
+    move = mcts(game_, iterations=10000)
+    print(f"Chosen move: {move}")
 
+def test_winning_move():
+    print("\n---- Winning Move ----")
+
+    game_ = game.TicTacToe()
+
+    game_ = game_.make_move(1) # X
+    game_ = game_.make_move(0) # O
+    game_ = game_.make_move(4) # X
+    game_ = game_.make_move(5) # O
+
+    game_.display()
+
+    move = mcts(game_, iterations=100)
+    print(f"MCTS move: {move}")
+
+def test_blocking_move():
+    print("\n---- Blocking Move ----")
+
+    game_ = game.TicTacToe()
+
+    game_ = game_.make_move(3)  # X
+    game_ = game_.make_move(0)  # O
+    game_ = game_.make_move(8)  # X
+    game_ = game_.make_move(1)  # O
+
+    game_.display()
+
+    move = mcts(game_, iterations=500)
+    print(f"MCTS move: {move}")
 
 def main():
+    print("***** Tests under different states *****")
     game_ = game.TicTacToe()
-    move = mcts(game_, iterations=1000)
-    print(f"MCTS recommends move: {move}")
+    move = mcts(game_, iterations=10000)
     new_state = game_.make_move(move)
+    print("---- Empty Board ----")
     new_state.display()
+    print(f"MCTS move: {move}")
+    test_winning_move()
+    test_blocking_move()
 
 if __name__ == "__main__":
     main()
-    
     
