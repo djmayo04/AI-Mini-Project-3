@@ -71,18 +71,19 @@ def main():
     print(f"{'Matchup':20} {'X wins':10} {'O wins':10} {'Draws':10}")
     for matchup, stats in results.items():
         print(f"{matchup:20} {stats['X wins']:10} {stats['O wins']:10} {stats['Draws']:10}")
+
 import time
-    def measure_time(agent, num_moves=100):
-        total_time = 0
-        for _ in range(num_moves):
-            start_time = time.time()
-            move = agent(TicTacToe())
-            total_time += time.time() - start_time
-        return total_time / num_moves
-    print("\nAverage time per move:")
-    print(f"Minimax: {measure_time(minimax):.4f} seconds")
-    print(f"MCTS: {measure_time(lambda state: mcts(state, iterations = 1000)):.4f} seconds")
-    print(f"Random: {measure_time(random_agent):.4f} seconds")
+def measure_time(agent, num_moves=100):
+    total_time = 0
+    for _ in range(num_moves):
+        start_time = time.time()
+        move = agent(TicTacToe())
+        total_time += time.time() - start_time
+    return total_time / num_moves
+print("\nAverage time per move:")
+print(f"Minimax: {measure_time(minimax):.4f} seconds")
+print(f"MCTS: {measure_time(mcts_agent.mcts):.4f} seconds")
+print(f"Random: {measure_time(random_agent):.4f} seconds")
 
 
 if __name__ == "__main__":    main()
