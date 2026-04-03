@@ -1,3 +1,5 @@
+import random 
+
 class TicTacToe:
     def __init__(self):
         # Initialize an empty 3x3 board
@@ -90,6 +92,10 @@ def new_move(game:TicTacToe, move):
     print(f"Legal Moves: {new_game.get_legal_moves()}")
 
     return new_game
+
+def random_agent(state):
+    legal_moves = state.get_legal_moves()
+    return random.choice(legal_moves)
 
 
 def main():
